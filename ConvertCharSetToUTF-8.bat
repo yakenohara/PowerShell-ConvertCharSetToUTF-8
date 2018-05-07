@@ -1,9 +1,32 @@
 @echo off
-:Shift_JIS -> UTF-8
-setlocal enabledelayedexpansion
+
+::定数
+set ps1FileName=ConvertCharSetToUTF-8.ps1
+
+::初期化
+set ps1FileFullPath=%~dp0%ps1FileName%
+
+
+::引数生成ループ
+set param=
 for %%f in (%*) do (
-  echo %%~ff| findstr /l /e /i ".txt .csv .c .h .cpp .def .ps1"
-  if !ERRORLEVEL! equ 0 (
-    powershell -nop -c "&{[IO.File]::WriteAllText($args[1], [IO.File]::ReadAllText($args[0], [Text.Encoding]::Default))}" \"%%~ff\" \"%%~ff\"
-  )
+  call :concat %%f
 )
+
+::Call powershell
+powershell "& \"%ps1FileFullPath%\"%param%"
+
+::エラーチェック
+if %ERRORLEVEL% == 1 (
+  echo.
+  pause
+)
+pause
+exit /b
+
+
+::引数生成サブルーチン
+:concat
+set param=%param% \"%~1\"
+
+exit /b
