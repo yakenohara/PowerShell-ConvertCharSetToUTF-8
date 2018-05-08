@@ -21,7 +21,7 @@ if %ERRORLEVEL% == 1 (
   echo.
   pause
 )
-pause
+
 exit /b
 
 
